@@ -19,17 +19,17 @@ public class SecretKeyGenerator {
 
     private static final String ALGORITHM = "AES";
 
-    public EncryptedData encrypt(String data) {
+    public EncryptedData encrypt(String data, SecretKey secretKey2) {
         try {
             // Generate a new AES secret key
-            SecretKey secretKey = generateSecretKey();
+//            SecretKey secretKey = generateSecretKey();
 
             Cipher cipher = Cipher.getInstance(ALGORITHM);
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey2);
             byte[] encryptedData = cipher.doFinal(data.getBytes("UTF-8"));
 
             String encodedEncryptedData = Base64.getEncoder().encodeToString(encryptedData);
-            String encodedSecretKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+            String encodedSecretKey = Base64.getEncoder().encodeToString(secretKey2.getEncoded());
 
             return new EncryptedData(encodedEncryptedData, encodedSecretKey);
         } catch (Exception e) {
@@ -38,7 +38,7 @@ public class SecretKeyGenerator {
         }
     }
 
-    private SecretKey generateSecretKey() throws NoSuchAlgorithmException {
+    public SecretKey generateSecretKey() throws NoSuchAlgorithmException {
         KeyGenerator keyGen = KeyGenerator.getInstance(ALGORITHM);
         keyGen.init(256); // AES key size can be 128, 192, or 256
         return keyGen.generateKey();
